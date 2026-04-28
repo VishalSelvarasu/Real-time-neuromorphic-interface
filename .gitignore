@@ -1,0 +1,50 @@
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Editor / IDE
+.vscode/
+.idea/
+
+# Test / coverage / cache
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+.cache/
+htmlcov/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local env files
+.env
+
+# Data and output directories
+data/
+output/
+outputs/
+
+# Large model checkpoints
+models/snn_checkpoint.pt
+
+# Python cache
+src/__pycache__/
+
+# Nested git repos
+**/.git/
