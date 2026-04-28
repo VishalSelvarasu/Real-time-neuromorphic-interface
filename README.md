@@ -7,9 +7,7 @@ I built it as a small research prototype to see how the two approaches behave in
 ## What’s in the repo
 
 - `src/` has the training, evaluation, and benchmarking scripts.
-- `models/` stores the saved model weights.
-- `configs/` keeps project settings.
-- `output/` is for plots, reports, and demo artifacts.
+- `models/` stores the saved model weights. Only the small CNN baseline is included in the repository; the larger SNN checkpoint is kept locally.
 - `requirements.txt` lists the Python packages.
 
 ## Setup
@@ -68,7 +66,7 @@ If those folders are missing, the training and evaluation scripts won’t have a
 
 The code is pushed to GitHub, but the dataset stays on your machine. That keeps the repository light and avoids GitHub file-size limits.
 
-Git LFS is installed in this project, but the dataset itself is still better left out of the repo.
+Large files such as the dataset archives and the full SNN checkpoint are excluded from the repository.
 
 ## Current results
 
