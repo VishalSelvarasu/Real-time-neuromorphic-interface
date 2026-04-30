@@ -1,16 +1,14 @@
 # Comparative Study of CNN and SNN Models for Real-Time Neuromorphic Gesture Recognition
 
-This project compares a CNN baseline and an SNN model for real-time gesture recognition using the DVSGesture dataset.
+This project compares a CNN baseline and an SNN model for real-time gesture recognition on the DVSGesture dataset.
 
-I built it as a small research prototype to see how the two approaches behave in practice, especially around accuracy and latency.
+The main goal is to observe how the two approaches differ in practice, especially in terms of accuracy and latency.
 
-## What’s in the repo
+## Repository contents
 
-- `src/` has the training, evaluation, and benchmarking scripts.
-- `models/` stores the saved model weights.
-- `configs/` keeps project settings.
-- `output/` is for plots, reports, and demo artifacts.
-- `requirements.txt` lists the Python packages.
+- `src/` contains the training, evaluation, and latency benchmarking scripts.
+- `models/` stores the saved model weights. The small CNN baseline is included in the repository, while the larger SNN checkpoint is kept locally.
+- `requirements.txt` lists the Python dependencies.
 
 ## Setup
 
@@ -22,9 +20,9 @@ venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 ```
 
-If PowerShell blocks the script, use the execution policy command you already used earlier in the project.
+If PowerShell blocks script execution, use the execution policy command already used earlier in the project.
 
-## Run the project
+## Running the project
 
 Train the models:
 
@@ -39,7 +37,7 @@ Evaluate the models:
 python src\evaluate.py
 ```
 
-Check latency:
+Measure latency:
 
 ```powershell
 python src\latency_benchmark.py
@@ -49,7 +47,7 @@ python src\latency_benchmark.py
 
 This project uses **DVSGesture**.
 
-The dataset is **not included in this repository** because it is too large for a normal GitHub upload. Keep it locally in:
+The dataset is not included in this project because it is too large for a standard GitHub upload. Keep it locally in:
 
 ```text
 data/external/DVSGesture/
@@ -62,42 +60,35 @@ Expected files and folders:
 - `ibmGestureTrain.tar.gz`
 - `ibmGestureTest.tar.gz`
 
-If those folders are missing, the training and evaluation scripts won’t have anything to run on.
+If these folders are missing, the training and evaluation scripts will not have data to run on.
 
-## Notes on the GitHub upload
+## GitHub contents
 
-The code is pushed to GitHub, but the dataset stays on your machine. That keeps the repository light and avoids GitHub file-size limits.
+This project includes the code and lightweight assets only. The dataset archives and the full SNN checkpoint are kept out of Git history so the project remains smaller and easier to manage.
 
-Git LFS is installed in this project, but the dataset itself is still better left out of the repo.
-
-## Current results
+## Results
 
 | Model | Test Accuracy | Avg Latency |
 |---|---:|---:|
 | CNN | 36.7% | 20.85 ms |
 | SNN | 23.9% | 345.21 ms |
 
-The CNN is currently the stronger of the two in both accuracy and latency.
+The current observation is that the CNN performs better than the SNN in both accuracy and latency under the present setup.
 
-## Why this repo exists
+## Project overview
 
-I wanted a straightforward comparison between a conventional CNN and an SNN setup for neuromorphic gesture recognition.
+This project looks at how a conventional CNN and an SNN behave under the same gesture recognition workflow.
 
-It is not a polished benchmark suite; it is more of a practical project that shows the pipeline from dataset to training to evaluation.
+The observations from the current runs show a clear gap between the two models, particularly in inference speed and overall accuracy.
 
-## Project status
+## Status
 
-This is still a work in progress.
+Completed baseline implementation.
 
-A few things that could improve it later:
-
-- better tuning,
-- cleaner plots,
-- a nicer demo flow,
-- and more careful SNN optimization.
+Possible next steps include better tuning, cleaner plots, a more polished demo flow, and further SNN optimization.
 
 ## License and reuse
 
-Please check the dataset rules separately before redistributing DVSGesture.
+Please check the dataset terms separately before redistributing DVSGesture.
 
-The code in this repo can be adapted for experiments, but the dataset itself should be downloaded from its original source.
+The code in this project can be adapted for experiments, but the dataset itself should be downloaded from its original source.
