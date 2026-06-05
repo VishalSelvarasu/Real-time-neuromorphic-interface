@@ -1,94 +1,122 @@
-# Comparative Study of CNN and SNN Models for Real-Time Neuromorphic Gesture Recognition
+# Real-Time Neuromorphic Gesture Recognition
 
-This project compares a CNN baseline and an SNN model for real-time gesture recognition on the DVSGesture dataset.
+> *CNNs vs SNNs — because the brain doesn't do matrix multiplications.*
 
-The main goal is to observe how the two approaches differ in practice, especially in terms of accuracy and latency.
+SNNs are supposed to be the natural fit for event-camera data. I wanted to test whether that's actually true — or whether a conventional CNN still wins on a dataset that was literally designed for neuromorphic hardware.
 
-## Repository contents
+The answer, at least at this stage, is complicated.
 
-- `src/` contains the training, evaluation, and latency benchmarking scripts.
-- `models/` stores the saved model weights. The small CNN baseline is included in the repository, while the larger SNN checkpoint is kept locally.
-- `requirements.txt` lists the Python dependencies.
+---
+
+## What this project does
+
+Compares a CNN baseline against an SNN on the DVSGesture dataset — IBM's event-camera gesture benchmark with 11 gesture classes recorded under different lighting conditions.
+
+The question is simple: **does the architecture that was built for this type of data actually outperform one that wasn't?**
+
+---
+
+## Results
+
+| Model | Test Accuracy | Avg Latency |
+|-------|--------------|-------------|
+| CNN   | 36.7%        | 20.85 ms    |
+| SNN   | 23.9%        | 345.21 ms   |
+
+The CNN wins on both metrics. That's not the result I expected going in.
+
+**On accuracy:** Both numbers are low — DVSGesture has 11 classes, so random chance sits around 9%. The models are learning, but not confidently. The CNN has more mature tooling behind it; gradient flow through spiking neurons requires surrogate approximations that introduce their own noise, and getting that right is genuinely non-trivial.
+
+**On latency:** 345ms for the SNN is the more surprising result. SNNs are supposed to be efficient — sparse, event-driven, low power. But that efficiency only shows up when the time step count and spike thresholds are properly tuned. The current setup runs more time steps than it probably needs to, which kills the latency advantage before it has a chance to appear.
+
+**Honest take:** I don't fully understand every reason the SNN underperformed here. SNN training is an open research problem — surrogate gradient methods, threshold tuning, and temporal encoding are all areas where the field is still figuring things out. This project is my entry point into that, not a conclusion.
+
+---
+
+## Dataset
+
+This project uses **DVSGesture** — an event-camera dataset from IBM Research, recorded with a DVS128 dynamic vision sensor.
+
+The dataset is not included in the repository (too large for standard GitHub upload). Keep it locally at:
+
+```
+data/external/DVSGesture/
+```
+
+Expected structure:
+```
+ibmGestureTrain/
+ibmGestureTest/
+ibmGestureTrain.tar.gz
+ibmGestureTest.tar.gz
+```
+
+---
+
+## Repository structure
+
+```
+src/
+  train_cnn.py         — CNN training script
+  train_snn.py         — SNN training script
+  evaluate.py          — Evaluation on test set
+  latency_benchmark.py — Inference latency measurement
+models/
+  cnn_baseline.pt      — Saved CNN weights (included)
+  snn_checkpoint.pt    — SNN weights (kept locally, too large for Git)
+config.py              — Shared configuration
+requirements.txt       — Python dependencies
+```
+
+---
 
 ## Setup
 
-Create a virtual environment and install the dependencies:
-
-```powershell
+```bash
 python -m venv venv
 venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 ```
 
-If PowerShell blocks script execution, use the execution policy command already used earlier in the project.
+If PowerShell blocks script execution:
+```bash
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+---
 
 ## Running the project
 
-Train the models:
-
-```powershell
+```bash
+# Train
 python src\train_cnn.py
 python src\train_snn.py
-```
 
-Evaluate the models:
-
-```powershell
+# Evaluate
 python src\evaluate.py
-```
 
-Measure latency:
-
-```powershell
+# Latency benchmark
 python src\latency_benchmark.py
 ```
 
-## Dataset
+---
 
-This project uses **DVSGesture**.
+## What's next
 
-The dataset is not included in this project because it is too large for a standard GitHub upload. Keep it locally in:
+- **Time step tuning** — reducing SNN time steps should cut latency significantly without proportional accuracy loss
+- **Spike threshold sweep** — systematic tuning of neuron thresholds is the most likely lever for accuracy improvement
+- **Proper event-to-frame encoding** — the current preprocessing may not be extracting temporal structure optimally
+- **Visualization** — spike raster plots to actually see what the SNN is responding to
+- **Hardware target** — ultimately this is about robotics perception; testing on edge hardware (Jetson, or neuromorphic chips like Intel Loihi) is the logical next step
 
-```text
-data/external/DVSGesture/
-```
+---
 
-Expected files and folders:
+## Background
 
-- `ibmGestureTrain/`
-- `ibmGestureTest/`
-- `ibmGestureTrain.tar.gz`
-- `ibmGestureTest.tar.gz`
+This sits at the intersection of two things I care about as a robotics student: real-time perception and energy-efficient inference. Event cameras are already showing up in robotics research for their low latency and high dynamic range. SNNs are the natural processing partner for that data — in theory.
 
-If these folders are missing, the training and evaluation scripts will not have data to run on.
+This project is me stress-testing that theory with real data and being honest about what I found.
 
-## GitHub contents
+---
 
-This project includes the code and lightweight assets only. The dataset archives and the full SNN checkpoint are kept out of Git history so the project remains smaller and easier to manage.
-
-## Results
-
-| Model | Test Accuracy | Avg Latency |
-|---|---:|---:|
-| CNN | 36.7% | 20.85 ms |
-| SNN | 23.9% | 345.21 ms |
-
-The current observation is that the CNN performs better than the SNN in both accuracy and latency under the present setup.
-
-## Project overview
-
-This project looks at how a conventional CNN and an SNN behave under the same gesture recognition workflow.
-
-The observations from the current runs show a clear gap between the two models, particularly in inference speed and overall accuracy.
-
-## Status
-
-Completed baseline implementation.
-
-Possible next steps include better tuning, cleaner plots, a more polished demo flow, and further SNN optimization.
-
-## License and reuse
-
-Please check the dataset terms separately before redistributing DVSGesture.
-
-The code in this project can be adapted for experiments, but the dataset itself should be downloaded from its original source.
+*DVSGesture dataset by IBM Research. Please check dataset terms before redistribution.*
